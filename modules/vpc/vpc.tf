@@ -5,11 +5,11 @@
 ## 1x VPC (with the CIDR specified in the variable VPC_CIDR)
 ## 1x Internet Gateway (attached to this VPC)
 ## 1x Route Table that has a default route to the Internet Gatway
-## 3x Public Subnets (Map Public IP on Launch Flag = True, w/ above route table)
-## 3x Elastic IPs
-## 3x NAT Gateways - one per public subnet
-## 3x Route tables that have a default route to the NAT Gateway in a subnet
-## 3x Private Subnets (with above route table, Map Public IP on Launch Flag = False)
+## Nx Public Subnets (Map Public IP on Launch Flag = True, w/ above route table)
+## Nx Elastic IPs
+## Nx NAT Gateways - one per public subnet
+## Nx Route tables that have a default route to the NAT Gateway in a subnet
+## Nx Private Subnets (with above route table, Map Public IP on Launch Flag = False)
 ## NOTE: The VPC doesn't have a default route to the IGW, this is by design
 
 # if you want the generated artifacts to have a prefix to their name, then 
@@ -91,7 +91,7 @@ resource "aws_internet_gateway" "the_igw" {
 
 ## Create a public subnets and have them route to the IGW. 
 resource "aws_subnet" "public_subnets" {
-  count = 3
+  count = length(var.AZs)
   vpc_id = aws_vpc.the_vpc.id
   cidr_block = cidrsubnet(aws_vpc.the_vpc.cidr_block, var.SUBNET_CIDR_NEWBITS, count.index)
   availability_zone = var.AZs[count.index]
@@ -102,13 +102,13 @@ resource "aws_subnet" "public_subnets" {
 }
   
  resource "aws_route_table_association" "public_rt_associations" {
-   count = 3
+   count = length(var.AZs)
    subnet_id = aws_subnet.public_subnets[count.index].id
    route_table_id = aws_route_table.the_public_route.id
  }
 
 resource "aws_eip" "elastic_ips" {
-  count = 3
+  count = length(var.AZs)
   vpc = true
   tags = {
     Name = "${var.PREFIX}cdp-eip-${count.index}"
@@ -116,7 +116,7 @@ resource "aws_eip" "elastic_ips" {
 }
 
 resource "aws_nat_gateway" "nat_gws" {
-  count = 3
+  count = length(var.AZs)
   allocation_id = aws_eip.elastic_ips[count.index].id
   subnet_id = aws_subnet.public_subnets[count.index].id
    tags = {
@@ -126,7 +126,7 @@ resource "aws_nat_gateway" "nat_gws" {
 
 
 resource "aws_subnet" "private_subnets" {
-  count = 3
+  count = length(var.AZs)
   vpc_id = aws_vpc.the_vpc.id
   cidr_block = cidrsubnet(aws_vpc.the_vpc.cidr_block, var.SUBNET_CIDR_NEWBITS, count.index+3)
   availability_zone = var.AZs[count.index]
@@ -136,7 +136,7 @@ resource "aws_subnet" "private_subnets" {
 }
 
 resource "aws_route_table" "private_routes" {
-    count = 3
+    count = length(var.AZs)
     vpc_id = aws_vpc.the_vpc.id
     route {
         cidr_block = "0.0.0.0/0"
@@ -148,7 +148,7 @@ resource "aws_route_table" "private_routes" {
 }
 
 resource "aws_route_table_association" "private_rt_associations" {
-    count = 3
+    count = length(var.AZs)
     subnet_id = aws_subnet.private_subnets[count.index].id
     route_table_id = aws_route_table.private_routes[count.index].id
 }

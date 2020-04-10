@@ -72,7 +72,7 @@ locals {
   policies_dir = "${path.module}/json_for_policies"
   STORAGE_LOCATION_PATH = "" #REMINDER - make it /foldername
   LOGS_PATH = "/logs"
-  DYNAMODB_TABLE_NAME = "${var.DATALAKE_BUCKET}*"
+  DYNAMODB_TABLE_NAME = "${var.PREFIX}${var.DATALAKE_BUCKET}*"
   DEFAULT_ENCRYPTION_KEY_ARN = "arn:aws:kms:${data.aws_region.theregion.name}:${data.aws_caller_identity.theaccount.account_id}:alias/aws/s3"
 }
 
@@ -142,9 +142,9 @@ resource "aws_iam_role" "datalake_admin" {
 resource "aws_iam_policy" "aws_cdp_log_policy" {
   name = "${var.PREFIX}aws-cdp-log-policy"
   policy = templatefile("${local.policies_dir}/aws-cdp-log-policy.json",
-    { LOGS_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
-      STORAGE_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
-      DATALAKE_BUCKET = "${var.DATALAKE_BUCKET}"
+    { LOGS_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
+      STORAGE_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
+      DATALAKE_BUCKET = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
       DYNAMODB_TABLE_NAME = "${local.DYNAMODB_TABLE_NAME}"
     }
     )
@@ -153,9 +153,9 @@ resource "aws_iam_policy" "aws_cdp_log_policy" {
 resource "aws_iam_policy" "aws_cdp_ranger_audit_s3_policy" {
   name="${var.PREFIX}aws-cdp-ranger-audit-s3-policy"
   policy = templatefile("${local.policies_dir}/aws-cdp-ranger-audit-s3-policy.json",
-    { LOGS_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
-      STORAGE_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
-      DATALAKE_BUCKET = "${var.DATALAKE_BUCKET}"
+    { LOGS_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
+      STORAGE_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
+      DATALAKE_BUCKET = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
       DYNAMODB_TABLE_NAME = "${local.DYNAMODB_TABLE_NAME}"
     }
     )
@@ -164,9 +164,9 @@ resource "aws_iam_policy" "aws_cdp_ranger_audit_s3_policy" {
 resource "aws_iam_policy" "aws_cdp_datalake_admin_s3_policy" {
   name="${var.PREFIX}aws-cdp-datalake-admin-s3-policy"
   policy = templatefile("${local.policies_dir}/aws-cdp-datalake-admin-s3-policy.json",
-    { LOGS_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
-      STORAGE_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
-      DATALAKE_BUCKET = "${var.DATALAKE_BUCKET}"
+    { LOGS_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
+      STORAGE_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
+      DATALAKE_BUCKET = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
       DYNAMODB_TABLE_NAME = "${local.DYNAMODB_TABLE_NAME}"
     }
     )
@@ -180,9 +180,9 @@ resource "aws_iam_policy" "aws_cdp_idbroker_assume_role" {
 resource "aws_iam_policy" "aws_cdp_bucket_access_policy" {
   name="${var.PREFIX}aws-cdp-bucket-access-policy"
   policy = templatefile("${local.policies_dir}/aws-cdp-bucket-access-policy.json",
-    { LOGS_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
-      STORAGE_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
-      DATALAKE_BUCKET = "${var.DATALAKE_BUCKET}"
+    { LOGS_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
+      STORAGE_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
+      DATALAKE_BUCKET = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
       DYNAMODB_TABLE_NAME = "${local.DYNAMODB_TABLE_NAME}"
     }
     )
@@ -191,9 +191,9 @@ resource "aws_iam_policy" "aws_cdp_bucket_access_policy" {
 resource "aws_iam_policy" "aws_cdp_dynamodb_policy" {
   name="${var.PREFIX}aws-cdp-dynamodb-policy"
   policy = templatefile("${local.policies_dir}/aws-cdp-dynamodb-policy.json",
-    { LOGS_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
-      STORAGE_LOCATION_BASE = "${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
-      DATALAKE_BUCKET = "${var.DATALAKE_BUCKET}"
+    { LOGS_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.LOGS_PATH}" ,
+      STORAGE_LOCATION_BASE = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}${local.STORAGE_LOCATION_PATH}",
+      DATALAKE_BUCKET = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
       DYNAMODB_TABLE_NAME = "${local.DYNAMODB_TABLE_NAME}"
     }
     )

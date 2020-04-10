@@ -19,10 +19,18 @@ variable "DATALAKE_BUCKET" {
 }
 
 
+### THESE VARIABLES CAN BE SET BY COMMAND LINE FLAGS
+### shellprompt$ terraform apply -var="PREFIX=MyPrefix_"
+
+variable "PREFIX" {
+  default = ""
+  description = "Prefix for names of created objects (e.g. CDPPOC_)"
+}
+
 resource "aws_s3_bucket" "the_bucket" {
-  bucket = var.DATALAKE_BUCKET
+  bucket = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
   tags = {
-    Name        = var.DATALAKE_BUCKET
+    Name        = "${lower(var.PREFIX)}${var.DATALAKE_BUCKET}"
   }
   server_side_encryption_configuration {
     rule {

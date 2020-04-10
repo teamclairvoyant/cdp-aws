@@ -10,6 +10,7 @@ module "cdp-s3" {
   source = "../../modules/s3"
 
   DATALAKE_BUCKET = var.bucket_name
+  PREFIX = var.deployment_name_prefix
 }
 
 module "cdp-iam" {

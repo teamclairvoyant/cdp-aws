@@ -21,6 +21,3 @@ resource "aws_iam_role_policy_attachment" "cdp" {
   policy_arn = aws_iam_policy.cdp-cross-account-policy.arn
 }
 
-output "arn" {
-  value = aws_iam_role.cdp-cross-account-role.arn
-}

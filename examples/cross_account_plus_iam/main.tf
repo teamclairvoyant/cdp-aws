@@ -11,6 +11,3 @@ module "cdp-iam" {
   PREFIX = var.deployment_name_prefix
 }
 
-output "cdp-cross-account-role" {
-  value = module.cross-account-role.arn
-}
